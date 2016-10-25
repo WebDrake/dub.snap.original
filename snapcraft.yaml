@@ -1,0 +1,73 @@
+name: dub
+version: 1.1.1
+summary: dub snap test test
+description: |
+    dub is a D build system
+confinement: strict
+grade: devel
+
+apps:
+  dub:
+    command: dub
+    plugs:
+    - home
+    - network
+
+parts:
+  dub:
+    source: https://github.com/dlang/dub.git
+    source-tag: v1.1.1
+    plugin: dub
+    dub-build: release
+    dub-config: application
+    dub-target-path: bin
+    organize:
+      dub: bin/dub
+    prime:
+    - -libcurl.dll
+    - -libeay32.dll
+    - -ssleay32.dll
+    build-packages:
+    - build-essential
+    - ldc
+    - libcurl4-gnutls-dev
+
+  curl:
+    plugin: nil
+    stage-packages: [libcurl4-gnutls-dev]
+
+  ldc:
+    source: git://github.com/ldc-developers/ldc.git
+    source-tag: v1.1.0-beta6
+    plugin: cmake
+    stage:
+    - -etc/ldc2.conf
+    build-packages:
+    - build-essential
+    - ldc
+    - llvm-dev
+    - libconfig++-dev
+    - libedit-dev
+    - zlib1g-dev
+  ldc-config:
+    plugin: dump
+    source: ldc-config
+    organize:
+      ldc2.conf: etc/ldc2.conf
+                                      
+  gcc:
+    plugin: nil
+    stage-packages: [gcc]
+    organize:
+      usr/bin/gcc: usr/bin/gcc.real
+  gcc-wrapper:
+    plugin: dump
+    source: gcc-wrapper
+    organize:
+      gcc.wrapper: usr/bin/gcc
+  libc6:
+    plugin: nil
+    stage-packages: [libc6]
+  libc6-dev:
+    plugin: nil
+    stage-packages: [libc6-dev]
