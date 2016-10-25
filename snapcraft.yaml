@@ -1,0 +1,32 @@
+name: dub
+version: 1.1.2
+summary: dub snap test test
+description: |
+    dub is a D build system
+confinement: classic
+grade: devel
+
+apps:
+  dub:
+    command: dub
+    plugs:
+    - home
+
+parts:
+  dub:
+    source: https://github.com/dlang/dub.git
+    source-tag: v1.1.2
+    plugin: dub
+    dub-build: release
+    dub-config: application
+    dub-target-path: bin
+    organize:
+      dub: bin/dub
+    prime:
+    - -libcurl.dll
+    - -libeay32.dll
+    - -ssleay32.dll
+    build-packages:
+    - build-essential
+    - ldc
+    - libcurl4-gnutls-dev
